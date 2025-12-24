@@ -1,5 +1,7 @@
 # HealTrack: Clinic Appointment System
 
+![Dashboard Overview](https://github.com/user-attachments/assets/a7fa3556-9cef-4090-9994-6a1d06d1de5f)
+
 A secure and intuitive clinic appointment platform designed to streamline booking workflows and enhance efficiency for both patients and administrators.
 
 ## Overview
@@ -32,8 +34,6 @@ HealTrack is built with the MERN stack (MongoDB, Express.js, React.js, Node.js) 
 - JWT (JSON Web Token)
 
 ## Screenshots
-
-![Dashboard Overview](https://github.com/user-attachments/assets/a7fa3556-9cef-4090-9994-6a1d06d1de5f)
 
 ![Patient Interface](https://github.com/user-attachments/assets/4ad6771a-5a59-4140-a3be-4699dcf4f565)
 
