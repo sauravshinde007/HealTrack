@@ -73,7 +73,7 @@ const AddDoctor = () => {
     }
 
     return (
-        <form onSubmit={onSubmitHandler} className='m-5 w-full'>
+        <form onSubmit={onSubmitHandler} className='m-5 w-full pt-20'>
 
             <p className='mb-3 text-lg font-medium'>Add Doctor</p>
 
