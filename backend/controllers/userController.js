@@ -5,15 +5,8 @@ import userModel from "../models/userModel.js";
 import doctorModel from "../models/doctorModel.js";
 import appointmentModel from "../models/appointmentModel.js";
 import { v2 as cloudinary } from 'cloudinary'
-import stripe from "stripe";
-import razorpay from 'razorpay';
-
-// Gateway Initialize
-// const stripeInstance = new stripe(process.env.STRIPE_SECRET_KEY)
-// const razorpayInstance = new razorpay({
-//     key_id: process.env.RAZORPAY_KEY_ID,
-//     key_secret: process.env.RAZORPAY_KEY_SECRET,
-// })
+import razorpayInstance from "../config/razorpay.js";
+import { createHmac } from "crypto";
 
 // API to register user
 const registerUser = async (req, res) => {
@@ -267,81 +260,37 @@ const paymentRazorpay = async (req, res) => {
 // API to verify payment of razorpay
 const verifyRazorpay = async (req, res) => {
     try {
-        const { razorpay_order_id } = req.body
-        const orderInfo = await razorpayInstance.orders.fetch(razorpay_order_id)
+        const {
+            razorpay_order_id,
+            razorpay_payment_id,
+            razorpay_signature,
+            appointmentId
+        } = req.body;
 
-        if (orderInfo.status === 'paid') {
-            await appointmentModel.findByIdAndUpdate(orderInfo.receipt, { payment: true })
-            res.json({ success: true, message: "Payment Successful" })
-        }
-        else {
-            res.json({ success: false, message: 'Payment Failed' })
-        }
-    } catch (error) {
-        console.log(error)
-        res.json({ success: false, message: error.message })
-    }
-}
+        const body = razorpay_order_id + "|" + razorpay_payment_id;
 
-// API to make payment of appointment using Stripe
-const paymentStripe = async (req, res) => {
-    try {
+        const expectedSignature = createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+            .update(body)
+            .digest("hex");
 
-        const { appointmentId } = req.body
-        const { origin } = req.headers
-
-        const appointmentData = await appointmentModel.findById(appointmentId)
-
-        if (!appointmentData || appointmentData.cancelled) {
-            return res.json({ success: false, message: 'Appointment Cancelled or not found' })
+        if (expectedSignature !== razorpay_signature) {
+            return res.json({ success: false, message: "Payment verification failed" });
         }
 
-        const currency = process.env.CURRENCY.toLocaleLowerCase()
+        // mark appointment as paid
+        await appointmentModel.findByIdAndUpdate(appointmentId, {
+            payment: true,
+            paymentId: razorpay_payment_id
+        });
 
-        const line_items = [{
-            price_data: {
-                currency,
-                product_data: {
-                    name: "Appointment Fees"
-                },
-                unit_amount: appointmentData.amount * 100
-            },
-            quantity: 1
-        }]
-
-        const session = await stripeInstance.checkout.sessions.create({
-            success_url: `${origin}/verify?success=true&appointmentId=${appointmentData._id}`,
-            cancel_url: `${origin}/verify?success=false&appointmentId=${appointmentData._id}`,
-            line_items: line_items,
-            mode: 'payment',
-        })
-
-        res.json({ success: true, session_url: session.url });
+        res.json({ success: true, message: "Payment Successful" });
 
     } catch (error) {
-        console.log(error)
-        res.json({ success: false, message: error.message })
+        console.log(error);
+        res.json({ success: false, message: error.message });
     }
-}
+};
 
-const verifyStripe = async (req, res) => {
-    try {
-
-        const { appointmentId, success } = req.body
-
-        if (success === "true") {
-            await appointmentModel.findByIdAndUpdate(appointmentId, { payment: true })
-            return res.json({ success: true, message: 'Payment Successful' })
-        }
-
-        res.json({ success: false, message: 'Payment Failed' })
-
-    } catch (error) {
-        console.log(error)
-        res.json({ success: false, message: error.message })
-    }
-
-}
 
 export {
     loginUser,
@@ -353,6 +302,4 @@ export {
     cancelAppointment,
     paymentRazorpay,
     verifyRazorpay,
-    paymentStripe,
-    verifyStripe
 }
