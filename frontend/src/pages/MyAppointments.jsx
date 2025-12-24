@@ -55,41 +55,58 @@ const MyAppointments = () => {
 
     }
 
-    const initPay = (order) => {
+    const initPay = (order, appointmentId) => {
         const options = {
             key: import.meta.env.VITE_RAZORPAY_KEY_ID,
             amount: order.amount,
             currency: order.currency,
-            name: 'Appointment Payment',
-            description: "Appointment Payment",
+            name: 'HealTrack',
+            description: "Doctor Appointment Payment",
             order_id: order.id,
             receipt: order.receipt,
+
             handler: async (response) => {
-
-                console.log(response)
-
                 try {
-                    const { data } = await axios.post(backendUrl + "/api/user/verifyRazorpay", response, { headers: { token } });
+                    const { data } = await axios.post(
+                        backendUrl + "/api/user/verify-razorpay",
+                        {
+                            razorpay_order_id: response.razorpay_order_id,
+                            razorpay_payment_id: response.razorpay_payment_id,
+                            razorpay_signature: response.razorpay_signature,
+                            appointmentId: appointmentId,
+                        },
+                        { headers: { token } }
+                    );
+
                     if (data.success) {
-                        navigate('/my-appointments')
-                        getUserAppointments()
+                        toast.success("Payment Successful");
+                        setPayment("");
+                        getUserAppointments();
+                    } else {
+                        toast.error(data.message);
                     }
+
                 } catch (error) {
-                    console.log(error)
-                    toast.error(error.message)
+                    console.log(error);
+                    toast.error("Payment verification failed");
                 }
-            }
+            },
+            theme: {
+                color: "#4F46E5",
+            },
         };
+
         const rzp = new window.Razorpay(options);
         rzp.open();
     };
+
 
     // Function to make payment using razorpay
     const appointmentRazorpay = async (appointmentId) => {
         try {
             const { data } = await axios.post(backendUrl + '/api/user/payment-razorpay', { appointmentId }, { headers: { token } })
             if (data.success) {
-                initPay(data.order)
+                initPay(data.order, appointmentId)
             }else{
                 toast.error(data.message)
             }
@@ -98,24 +115,6 @@ const MyAppointments = () => {
             toast.error(error.message)
         }
     }
-
-    // Function to make payment using stripe
-    const appointmentStripe = async (appointmentId) => {
-        try {
-            const { data } = await axios.post(backendUrl + '/api/user/payment-stripe', { appointmentId }, { headers: { token } })
-            if (data.success) {
-                const { session_url } = data
-                window.location.replace(session_url)
-            }else{
-                toast.error(data.message)
-            }
-        } catch (error) {
-            console.log(error)
-            toast.error(error.message)
-        }
-    }
-
-
 
     useEffect(() => {
         if (token) {
@@ -143,7 +142,6 @@ const MyAppointments = () => {
                         <div></div>
                         <div className='flex flex-col gap-2 justify-end text-sm text-center'>
                             {!item.cancelled && !item.payment && !item.isCompleted && payment !== item._id && <button onClick={() => setPayment(item._id)} className='text-[#696969] sm:min-w-48 py-2 border rounded hover:bg-primary hover:text-white transition-all duration-300'>Pay Online</button>}
-                            {!item.cancelled && !item.payment && !item.isCompleted && payment === item._id && <button onClick={() => appointmentStripe(item._id)} className='text-[#696969] sm:min-w-48 py-2 border rounded hover:bg-gray-100 hover:text-white transition-all duration-300 flex items-center justify-center'><img className='max-w-20 max-h-5' src={assets.stripe_logo} alt="" /></button>}
                             {!item.cancelled && !item.payment && !item.isCompleted && payment === item._id && <button onClick={() => appointmentRazorpay(item._id)} className='text-[#696969] sm:min-w-48 py-2 border rounded hover:bg-gray-100 hover:text-white transition-all duration-300 flex items-center justify-center'><img className='max-w-20 max-h-5' src={assets.razorpay_logo} alt="" /></button>}
                             {!item.cancelled && item.payment && !item.isCompleted && <button className='sm:min-w-48 py-2 border rounded text-[#696969]  bg-[#EAEFFF]'>Paid</button>}
 
