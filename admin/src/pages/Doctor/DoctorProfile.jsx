@@ -48,7 +48,7 @@ const DoctorProfile = () => {
 
     return profileData && (
         <div>
-            <div className='flex flex-col gap-4 m-5'>
+            <div className='flex flex-col gap-4 m-5 pt-20'>
                 <div>
                     <img className='bg-primary/80 w-full sm:max-w-64 rounded-lg' src={profileData.image} alt="" />
                 </div>
