@@ -33,15 +33,13 @@ HealTrack is built with the MERN stack (MongoDB, Express.js, React.js, Node.js) 
 
 ## Screenshots
 
-![Dashboard Overview](https://github.com/user-attachments/assets/6e02d8bb-ae32-4bf0-aced-5e1684b32fe8)
+![Dashboard Overview](https://github.com/user-attachments/assets/a7fa3556-9cef-4090-9994-6a1d06d1de5f)
 
-![Patient Interface](https://github.com/user-attachments/assets/9931e425-da66-4893-baed-fde53553c826)
+![Patient Interface](https://github.com/user-attachments/assets/4ad6771a-5a59-4140-a3be-4699dcf4f565)
 
-![Appointment Booking](https://github.com/user-attachments/assets/db50ec8f-5a56-439b-8ed3-6e55079d8645)
+![Appointment Booking](https://github.com/user-attachments/assets/3b209acb-e310-4019-a77e-2aa3becc8c48)
 
-![Admin Dashboard](https://github.com/user-attachments/assets/eb621b30-673f-4640-99bb-2a5dd3696351)
-
-![Appointment Management](https://github.com/user-attachments/assets/96ff45ad-b468-438a-a8a4-27cd28fdf730)
+![Appointment Management](https://github.com/user-attachments/assets/a8815b79-b96f-419e-b233-08ce0af2ae81)
 
 ## Installation
 
