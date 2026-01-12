@@ -6,11 +6,15 @@ import Banner from '../components/Banner'
 
 const Home = () => {
   return (
-    <div>
+    <div className="w-full">
       <HeroSection />
-      <SpecialityMenu />
-      <TopDoctors />
-      <Banner />
+      
+      {/* Add margins to other sections individually if they don't have backgrounds */}
+      <div className="mx-4 sm:mx-[10%]">
+        <SpecialityMenu />
+        <TopDoctors />
+        <Banner />
+      </div>
     </div>
   )
 }
