@@ -18,13 +18,14 @@ const TopDoctors = () => {
                 </p>
             </div>
 
-            {/* Modern Card Grid */}
-            <div className='w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 pt-10'>
+            {/* Adjusted Grid: grid-cols-auto or better responsive columns */}
+            <div className='w-full grid grid-cols-auto gap-8 pt-10 px-3 sm:px-0'>
                 {doctors.slice(0, 8).map((item, index) => (
                     <div
                         key={index}
                         onClick={() => { navigate(`/appointment/${item._id}`); window.scrollTo(0, 0) }}
-                        className='group relative bg-white/70 backdrop-blur-md border border-indigo-50 rounded-[2.5rem] p-4 cursor-pointer hover:shadow-2xl hover:shadow-indigo-200/50 hover:-translate-y-2 transition-all duration-500'
+                        /* Added max-w-[350px] and mx-auto to prevent over-stretching on mobile */
+                        className='group relative bg-white/70 backdrop-blur-md border border-indigo-50 rounded-[2.5rem] p-4 cursor-pointer hover:shadow-2xl hover:shadow-indigo-200/50 hover:-translate-y-2 transition-all duration-500 w-full max-w-[350px] mx-auto'
                     >
                         {/* Doctor Image Container */}
                         <div className="relative h-64 w-full bg-indigo-50 rounded-[2rem] overflow-hidden">
