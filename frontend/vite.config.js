@@ -8,6 +8,6 @@ export default defineConfig({
     host: true
   },
   preview:{
-    allowedHosts: ['65.0.71.166.nip.io']
+    allowedHosts: ['3.6.66.138.nip.io']
   }
 })
