@@ -21,7 +21,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           port: 22
           script: |
-            cd ~/Healtrack
+            cd ~/HealTrack
             git pull origin main
             docker-compose down
             docker-compose build
