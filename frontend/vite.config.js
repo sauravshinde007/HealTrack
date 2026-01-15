@@ -6,5 +6,8 @@ export default defineConfig({
   server: {
     port: 5173,
     host: true
+  },
+  preview:{
+    allowedHosts: ['65.0.71.166.nip.io']
   }
 })
