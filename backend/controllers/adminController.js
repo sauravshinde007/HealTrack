@@ -30,15 +30,56 @@ const loginAdmin = async (req, res) => {
 // API to get all appointments list
 const appointmentsAdmin = async (req, res) => {
     try {
-
         const appointments = await appointmentModel.find({})
-        res.json({ success: true, appointments })
+
+        const safeAppointments = appointments.map(app => {
+            // 1. Safe Age Calculation
+            let age = "N/A"
+            if (app.userData?.dob) {
+                const dob = new Date(app.userData.dob)
+                if (!isNaN(dob.getTime())) {
+                    const today = new Date()
+                    age = today.getFullYear() - dob.getFullYear()
+                    // Adjust age if birthday hasn't occurred yet this year
+                    const monthDiff = today.getMonth() - dob.getMonth()
+                    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+                        age--
+                    }
+                }
+            }
+
+            // 2. Safe Date Parsing for your "DD_MM_YYYY" format
+            let formattedDate = "N/A"
+            if (app.slotDate) {
+                const dateParts = app.slotDate.split('_')
+                if (dateParts.length === 3) {
+                    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+                    const day = dateParts[0]
+                    const monthIndex = parseInt(dateParts[1]) - 1 // JS months are 0-indexed
+                    const year = dateParts[2]
+                    
+                    if (months[monthIndex]) {
+                        formattedDate = `${day} ${months[monthIndex]} ${year}`
+                    }
+                }
+            }
+
+            return {
+                ...app._doc,
+                userData: {
+                    ...app.userData,
+                    age: age // Inject the calculated age safely
+                },
+                formattedDate: `${formattedDate}, ${app.slotTime || ""}`
+            }
+        })
+
+        res.json({ success: true, appointments: safeAppointments })
 
     } catch (error) {
         console.log(error)
         res.json({ success: false, message: error.message })
     }
-
 }
 
 // API for appointment cancellation

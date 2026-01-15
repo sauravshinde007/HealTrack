@@ -22,8 +22,19 @@ const App = () => {
   const { aToken } = useContext(AdminContext)
 
   return dToken || aToken ? (
-    <div className='bg-[#F8F9FD]'>
+    <div className='min-h-screen relative overflow-x-hidden'>
       <ToastContainer />
+
+      {/* --- GLOBAL BACKGROUND LAYER --- */}
+      <div className="fixed inset-0 -z-10 pointer-events-none">
+        {/* Large Purple Glow (Top Left) */}
+        <div className="absolute top-[-10%] left-[-10%] w-[70vw] h-[70vw] bg-purple-200/30 rounded-full blur-[120px]" />
+        {/* Large Indigo Glow (Bottom Right) */}
+        <div className="absolute bottom-[-10%] right-[-10%] w-[60vw] h-[60vw] bg-indigo-200/20 rounded-full blur-[100px]" />
+        {/* Subtle Blue Glow (Center) */}
+        <div className="absolute top-[20%] left-[20%] w-[40vw] h-[40vw] bg-blue-100/20 rounded-full blur-[100px]" />
+      </div>
+      
       <Navbar />
       <div className='flex items-start'>
         <Sidebar />

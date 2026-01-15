@@ -6,12 +6,17 @@ export default {
   ],
   theme: {
     extend: {
-      gridTemplateColumns:{
-        'auto':'repeat(auto-fill, minmax(200px, 1fr))'
-      },
-      colors:{
-        primary: "#4F46E5",
+      colors: {
+        primary: "#6366f1", // Revamped Indigo
+        secondary: "#a855f7", // Revamped Purple
+        dark: "#0f172a",
         accent: "#EEF2FF",
+      },
+      backgroundImage: {
+        'gradient-brand': 'linear-gradient(to right, #6366f1, #a855f7)',
+      },
+      gridTemplateColumns: {
+        'auto': 'repeat(auto-fill, minmax(200px, 1fr))'
       }
     },
   },

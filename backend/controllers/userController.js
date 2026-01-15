@@ -10,38 +10,37 @@ import { createHmac } from "crypto";
 
 // API to register user
 const registerUser = async (req, res) => {
-
     try {
-        const { name, email, password } = req.body;
+        const { name, email, password, dob, gender } = req.body;
 
-        // checking for all data to register user
-        if (!name || !email || !password) {
+        // 1. Check for all required data including new fields [cite: 259]
+        if (!name || !email || !password || !dob || !gender) {
             return res.json({ success: false, message: 'Missing Details' })
         }
 
-        // validating email format
+        // 2. Standard validations [cite: 259, 260]
         if (!validator.isEmail(email)) {
             return res.json({ success: false, message: "Please enter a valid email" })
         }
-
-        // validating strong password
         if (password.length < 8) {
             return res.json({ success: false, message: "Please enter a strong password" })
         }
 
-        // hashing user password
-        const salt = await bcrypt.genSalt(10); // the more no. round the more time it will take
+        const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt)
 
+        // 3. Save full user data [cite: 261, 300]
         const userData = {
             name,
             email,
             password: hashedPassword,
+            dob,    // Now saved during registration
+            gender  // Now saved during registration
         }
 
         const newUser = new userModel(userData)
         const user = await newUser.save()
-        const token = jwt.sign({ id: user._id }, "jwt_secret_key")
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET)
 
         res.json({ success: true, token })
 
