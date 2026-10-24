@@ -2,36 +2,48 @@
 
 ![Dashboard Overview](https://github.com/user-attachments/assets/a7fa3556-9cef-4090-9994-6a1d06d1de5f)
 
-A secure and intuitive clinic appointment platform designed to streamline booking workflows and enhance efficiency for both patients and administrators.
+A secure and intuitive clinic appointment platform designed to streamline booking workflows and enhance efficiency for patients, doctors, and administrators.
 
 ## Overview
 
-HealTrack is built with the MERN stack (MongoDB, Express.js, React.js, Node.js) and offers a modern, responsive interface for managing clinic appointments. The system provides dedicated dashboards for patients and administrators, making appointment management seamless and efficient.
+HealTrack is built with the MERN stack (MongoDB, Express.js, React.js, Node.js) and offers a modern, responsive interface for managing clinic appointments. The system provides three dedicated panels — patient-facing frontend, doctor panel, and admin dashboard — making appointment management seamless and efficient.
 
 ## Features
 
-- **Secure User Authentication**: JWT-based authentication system for patients and administrators
-- **RESTful API Architecture**: Well-defined REST APIs for managing users, appointments, and clinic data
-- **Responsive Dashboards**: User-friendly interfaces optimized for all devices
-- **Streamlined Booking**: Simplified appointment scheduling process for patients
-- **Administrative Tools**: Comprehensive management features for clinic staff
-- **Real-time Updates**: Instant appointment status updates and notifications
+- **Secure User Authentication**: JWT-based authentication for patients, doctors, and administrators
+- **Three Dedicated Panels**: Separate interfaces for patients, doctors, and admins
+- **Appointment Booking**: Patients can browse doctors, view available slots, and book appointments
+- **Doctor Management**: Admins can add, delete, and manage doctors
+- **Payment Integration**: Razorpay payment gateway for online appointment payments
+- **Image Uploads**: Cloudinary-based image storage for doctor and user profile photos
+- **Responsive UI**: Tailwind CSS with Framer Motion animations, optimized for all devices
+- **Docker Support**: Docker Compose setup for containerized deployment
+- **CI/CD Pipeline**: GitHub Actions workflow for automated deployment
 
 ## Technology Stack
 
-### Frontend
-- React.js
-- Bootstrap
+### Frontend & Admin Panel
+- React.js 18
+- Vite
+- Tailwind CSS
+- Framer Motion
+- Lucide React (icons)
+- React Router v6
+- Axios
+- React Toastify
 
 ### Backend
 - Node.js
 - Express.js
+- Mongoose (MongoDB ODM)
+- JSON Web Tokens (JWT)
+- bcrypt
+- Multer (file uploads)
+- Cloudinary
+- Razorpay SDK
 
 ### Database
 - MongoDB
-
-### Authentication
-- JWT (JSON Web Token)
 
 ## Screenshots
 
@@ -41,95 +53,219 @@ HealTrack is built with the MERN stack (MongoDB, Express.js, React.js, Node.js) 
 
 ![Appointment Management](https://github.com/user-attachments/assets/a8815b79-b96f-419e-b233-08ce0af2ae81)
 
+## Project Structure
+
+```
+HealTrack/
+├── backend/          # Express.js API server
+│   ├── config/       # MongoDB, Cloudinary, Razorpay config
+│   ├── controllers/  # Route handlers
+│   ├── middleware/    # Auth middleware (admin, doctor, user)
+│   ├── models/       # Mongoose schemas
+│   └── routes/       # API route definitions
+├── frontend/         # Patient-facing React app
+│   └── src/
+│       ├── assets/
+│       ├── components/
+│       ├── context/
+│       └── pages/
+├── admin/            # Admin & Doctor panel React app
+│   └── src/
+│       ├── assets/
+│       ├── components/
+│       ├── context/
+│       └── pages/
+│           ├── Admin/
+│           └── Doctor/
+├── docker-compose.yml
+└── .github/workflows/deploy.yml
+```
+
 ## Installation
 
 ### Prerequisites
 
-- Node.js (v14 or higher)
-- MongoDB (v4.4 or higher)
-- npm or yarn package manager
+- Node.js (v18 or higher)
+- MongoDB Atlas account (or local MongoDB)
+- Cloudinary account
+- Razorpay account (for payments)
 
 ### Setup Instructions
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/healtrack.git
-   cd healtrack
+   git clone https://github.com/sauravshinde007/HealTrack.git
+   cd HealTrack
    ```
 
-2. **Install backend dependencies**
+2. **Set up the backend**
    ```bash
    cd backend
    npm install
+   cp .env.example .env
+   # Edit .env with your actual credentials
    ```
 
-3. **Install frontend dependencies**
+3. **Set up the frontend**
    ```bash
    cd ../frontend
    npm install
+   cp .env.example .env
+   # Edit .env — set VITE_BACKEND_URL to your backend URL
    ```
 
-4. **Configure environment variables**
-   
-   Create a `.env` file in the backend directory:
-   ```env
-   PORT=5000
-   MONGODB_URI=your_mongodb_connection_string
-   JWT_SECRET=your_jwt_secret_key
-   ```
-
-5. **Start MongoDB**
+4. **Set up the admin panel**
    ```bash
-   mongod
+   cd ../admin
+   npm install
+   cp .env.example .env
+   # Edit .env — set VITE_BACKEND_URL to your backend URL
    ```
 
-6. **Run the application**
-   
-   Backend (from backend directory):
+5. **Run the application**
+
+   Backend (from `backend/`):
    ```bash
-   npm start
+   npm start          # production
+   npm run server     # development with nodemon
    ```
-   
-   Frontend (from frontend directory):
+
+   Frontend (from `frontend/`):
    ```bash
-   npm start
+   npm run dev
    ```
 
-7. **Access the application**
-   
-   Open your browser and navigate to `http://localhost:3000`
+   Admin (from `admin/`):
+   ```bash
+   npm run dev
+   ```
 
-## Usage
+6. **Access the application**
+   - Frontend: `http://localhost:5173`
+   - Admin Panel: `http://localhost:5174`
+   - Backend API: `http://localhost:4000`
 
-### For Patients
-1. Register for a new account or log in
-2. Browse available appointment slots
-3. Book appointments with preferred doctors
-4. View and manage your appointments
-5. Receive appointment confirmations
+### Docker Setup
 
-### For Administrators
-1. Log in with admin credentials
-2. Manage patient appointments
-3. View clinic schedule and availability
-4. Update appointment statuses
-5. Generate reports and analytics
+```bash
+# Make sure backend/.env is configured
+docker-compose up -d
+```
+
+This starts all services: backend (port 4000), frontend (port 5173), admin (port 5174), and MongoDB (port 27017).
+
+## Environment Variables
+
+### Backend (`backend/.env`)
+
+| Variable | Description |
+|---|---|
+| `MONGODB_URI` | MongoDB connection string |
+| `JWT_SECRET` | Secret key for JWT token signing |
+| `CLOUDINARY_NAME` | Cloudinary cloud name |
+| `CLOUDINARY_API_KEY` | Cloudinary API key |
+| `CLOUDINARY_SECRET_KEY` | Cloudinary API secret |
+| `RAZORPAY_KEY_ID` | Razorpay key ID |
+| `RAZORPAY_KEY_SECRET` | Razorpay key secret |
+| `ADMIN_EMAIL` | Admin login email |
+| `ADMIN_PASSWORD` | Admin login password |
+| `CURRENCY` | Currency code (e.g., `INR`) |
+
+### Frontend & Admin (`frontend/.env`, `admin/.env`)
+
+| Variable | Description |
+|---|---|
+| `VITE_BACKEND_URL` | Backend API URL (e.g., `http://localhost:4000`) |
+| `VITE_CURRENCY` | Currency symbol (admin only, e.g., `₹`) |
+
+## Deploying to Vercel
+
+The frontend and admin panels can be deployed to Vercel. The backend needs a Node.js hosting platform (Render, Railway, or similar).
+
+### Step 1: Deploy the Backend
+
+Since Vercel is serverless and this backend uses WebSocket-like persistent connections with MongoDB, deploy the backend on **Render**, **Railway**, or **Fly.io**:
+
+1. Push your code to GitHub
+2. On [Render](https://render.com): Create a **Web Service**, connect your repo, set root directory to `backend/`
+3. Set build command: `npm install`
+4. Set start command: `node server.js`
+5. Add all environment variables from `backend/.env`
+6. Note the deployed URL (e.g., `https://healtrack-backend.onrender.com`)
+
+### Step 2: Deploy Frontend to Vercel
+
+1. Go to [vercel.com](https://vercel.com) and import your GitHub repository
+2. Set **Root Directory** to `frontend`
+3. Framework Preset: **Vite**
+4. Add environment variable:
+   - `VITE_BACKEND_URL` = your deployed backend URL (from Step 1)
+5. Click **Deploy**
+
+### Step 3: Deploy Admin Panel to Vercel
+
+1. On Vercel, click **Add New Project** and import the same repository again
+2. Set **Root Directory** to `admin`
+3. Framework Preset: **Vite**
+4. Add environment variables:
+   - `VITE_BACKEND_URL` = your deployed backend URL
+   - `VITE_CURRENCY` = `₹`
+5. Click **Deploy**
+
+### Step 4: Update Backend CORS
+
+After deploying, update `backend/server.js` to restrict CORS to your deployed frontend URLs:
+
+```js
+app.use(cors({
+  origin: [
+    'https://your-frontend.vercel.app',
+    'https://your-admin.vercel.app',
+    'http://localhost:5173',
+    'http://localhost:5174'
+  ]
+}))
+```
 
 ## API Endpoints
 
-### Authentication
-- `POST /api/auth/register` - Register new user
-- `POST /api/auth/login` - User login
+### User Routes (`/api/user`)
+| Method | Endpoint | Auth | Description |
+|---|---|---|---|
+| POST | `/register` | No | Register new patient |
+| POST | `/login` | No | Patient login |
+| GET | `/get-profile` | User | Get user profile |
+| POST | `/update-profile` | User | Update user profile (with image) |
+| POST | `/book-appointment` | User | Book an appointment |
+| GET | `/appointments` | User | List user's appointments |
+| POST | `/cancel-appointment` | User | Cancel an appointment |
+| POST | `/payment-razorpay` | User | Create Razorpay order |
+| POST | `/verify-razorpay` | User | Verify Razorpay payment |
 
-### Appointments
-- `GET /api/appointments` - Get all appointments
-- `POST /api/appointments` - Create new appointment
-- `PUT /api/appointments/:id` - Update appointment
-- `DELETE /api/appointments/:id` - Cancel appointment
+### Admin Routes (`/api/admin`)
+| Method | Endpoint | Auth | Description |
+|---|---|---|---|
+| POST | `/login` | No | Admin login |
+| POST | `/add-doctor` | Admin | Add a new doctor (with image) |
+| POST | `/delete-doctor` | Admin | Delete a doctor |
+| GET | `/all-doctors` | Admin | List all doctors |
+| GET | `/appointments` | Admin | List all appointments |
+| POST | `/cancel-appointment` | Admin | Cancel any appointment |
+| POST | `/change-availability` | Admin | Toggle doctor availability |
+| GET | `/dashboard` | Admin | Get dashboard stats |
 
-### Users
-- `GET /api/users/profile` - Get user profile
-- `PUT /api/users/profile` - Update user profile
+### Doctor Routes (`/api/doctor`)
+| Method | Endpoint | Auth | Description |
+|---|---|---|---|
+| POST | `/login` | No | Doctor login |
+| GET | `/list` | No | List all doctors (public) |
+| GET | `/appointments` | Doctor | Get doctor's appointments |
+| POST | `/cancel-appointment` | Doctor | Cancel an appointment |
+| POST | `/complete-appointment` | Doctor | Mark appointment complete |
+| POST | `/change-availability` | Doctor | Toggle own availability |
+| GET | `/dashboard` | Doctor | Get dashboard stats |
+| GET | `/profile` | Doctor | Get doctor profile |
+| POST | `/update-profile` | Doctor | Update doctor profile |
 
 ## Contributing
 
@@ -144,13 +280,3 @@ Contributions are welcome! Please follow these steps:
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Contact
-
-For questions or support, please open an issue on GitHub or contact the maintainers.
-
-## Acknowledgments
-
-- Thanks to all contributors who have helped shape HealTrack
-- Built with modern web technologies and best practices
-- Designed with user experience and security as top priorities
